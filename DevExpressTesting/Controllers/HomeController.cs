@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DevExpressTesting.ViewModels;
 
 namespace DevExpressTesting.Controllers
 {
@@ -10,7 +11,9 @@ namespace DevExpressTesting.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var itemCount = EmployeeList.EmployeeListItems.Length;
+
+            return View(EmployeeList.EmployeeListItems.Take(itemCount));
         }
 
         public ActionResult About()

@@ -1,31 +1,84 @@
-﻿@{
+﻿@model IEnumerable<DevExpressTesting.ViewModels.EmployeeSelectListItem>
+
+@{
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+@*<div class="jumbotron">
+        <h1>ASP.NET</h1>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    </div>*@
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <p>Testing for select list</p>
+    <p><a class="btn btn-default" href="https://js.devexpress.com/Demos/WidgetsGallery/Demo/List/ListSelection/Mvc/Light/">DevExpressDemo</a></p>
+</div>
+
+<div id="list-demo">
+    <div class="widget-container">
+        @(Html.DevExtreme().List()
+              .ID("simpleList")
+              .Height(400)
+              .ShowSelectionControls(true)
+              .SelectionMode(ListSelectionMode.All)
+              .DataSource(Model, "EmployeeNumber")
+              .ItemTemplate(@<text><%= EmployeeNumber%> - <%= FirstName %> <%= LastName %> - <%= HomeDepartment%></text>)
+              .OnSelectionChanged(@<text>
+                                      function(data) {
+                                      $("#selectedItemKeys").text(data.component.option("selectedItemKeys").join(", "));
+                                      }
+                                   </text>)
+              )
+
+        <div class="selected-data">
+            <span class="caption">Selected IDs:</span>
+            <span id="selectedItemKeys"></span>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+
+    <div class="options">
+        <div class="caption">Options</div>
+        <div class="option">
+            <span>Selection Mode</span>
+            @(Html.DevExtreme().SelectBox()
+                  .Value(ListSelectionMode.All)
+                  .DataSource(Enum.GetValues(typeof(ListSelectionMode)))
+                  .OnValueChanged(@<text>
+                                      function(data) {
+                                      $("#simpleList").dxList("option", "selectionMode", data.value);
+                                      $("#selectAllMode").dxSelectBox("option", "disabled", data.value !== "all");
+                                      }
+                                   </text>)
+                  ) 
+        </div>
+        <div class="option">
+            <span>Select All Mode</span>
+            @(Html.DevExtreme().SelectBox()
+                  .ID("selectAllMode")
+                  .Disabled(false)
+                  .DataSource(Enum.GetValues(typeof(SelectAllMode)))
+                  .Value(SelectAllMode.Page)
+                  .OnValueChanged(@<text>
+                                      function(data) {
+                                      $("#simpleList").dxList("option", "selectAllMode", data.value);
+                                      }
+                                   </text>)
+                  )
+        </div>
     </div>
 </div>
+
+
+@(Html.DevExtreme().DataGrid()
+      .ID("dataGrid")
+      .DataSource(Model)
+      .Columns(columns =>
+      {
+          columns.Add().DataField("EmployeeNumber");
+          columns.Add().DataField("FirstName");
+          columns.Add().DataField("LastName");
+          columns.Add().DataField("HomeDepartment");
+
+      })
+      )
