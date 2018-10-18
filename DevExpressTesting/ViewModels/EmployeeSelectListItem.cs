@@ -5,7 +5,7 @@ using System.Web;
 
 namespace DevExpressTesting.ViewModels
 {
-    public class EmployeeSelectListViewModel
+    public class EmployeeSelectListItem
     {
         public string EmployeeNumber { get; set; }
 
